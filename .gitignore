@@ -1,0 +1,47 @@
+# =============================================
+# .gitignore — Simulador Newtoniano UTP
+# =============================================
+
+# Entorno virtual Python
+.venv/
+venv/
+env/
+
+# Cache de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyc
+
+# Base de datos local (se crea en PythonAnywhere con migrate)
+db.sqlite3
+simulaciones.db
+
+# Archivos de medios / grabaciones de pantalla (pesados)
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Colección de estáticos generada por collectstatic (se regenera en el servidor)
+staticfiles/
+
+# Variables de entorno
+.env
+.env.local
+.env.production
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i93emye6ypy!jja#q5t0b0v=l!zi9zqt07vhw8qjn&c7^^2h@b'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-i93emye6ypy!jja#q5t0b0v=l!zi9zqt07vhw8qjn&c7^^2h@b')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# En producción: DJANGO_DEBUG=False
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    '.pythonanywhere.com',  # Dominio de PythonAnywhere (todos los subdominios)
+    '*.vercel.app',         # Por si acaso
+]
 
 
 # Application definition
@@ -44,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Servir estáticos en producción
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware', # Habilitar CORS
     'django.middleware.common.CommonMiddleware',
@@ -121,6 +128,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'frontend',
 ]
+# Directorio donde collectstatic agrupará todo para producción
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# WhiteNoise: compresión de estáticos y caché larga en producción
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
