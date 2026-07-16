@@ -243,6 +243,7 @@ function App() {
   const threeSceneRef = useRef(null);
   const telemetriaRef = useRef(null);
   const pasosRef = useRef([]);
+  const cargandoPresetRef = useRef(false);
 
   const obtenerPuntoEnPista = (s) => {
     if (trazadoPista === 'recta') {
@@ -517,6 +518,7 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (cargandoPresetRef.current) return;
     const conf = escenariosConfig[escenario];
     if (conf) {
       setVInicial(conf.v_ini_def);
@@ -561,6 +563,7 @@ function App() {
   }, [escenario]);
 
   useEffect(() => {
+    if (cargandoPresetRef.current) return;
     const conf = escenariosConfig[escenario];
     if (conf && conf.climas && conf.climas[entorno] !== undefined) {
       setFriccionEstatica(Math.min(1.0, conf.climas[entorno] + 0.15));
@@ -2670,6 +2673,14 @@ function App() {
       setQuizRespuestaCorrecta(acel);
       
       setQuizProcedimiento([
+        `DATOS IDENTIFICADOS DEL PROBLEMA:`,
+        `  • Masa del cuerpo (m) = ${m} kg`,
+        `  • Ángulo de inclinación (θ) = ${theta}°`,
+        `  • Coeficiente de fricción cinética (μk) = ${mu_k}`,
+        `  • Fuerza de tracción aplicada (F_motor) = ${f_motor} N`,
+        `  • Aceleración de la gravedad (g) = 9.81 m/s²`,
+        ``,
+        `DESGLOSE DE RESOLUCIÓN PASO A PASO:`,
         `1. Peso tangencial: Px = m · g · sen(θ) = ${m} · 9.81 · sen(${theta}°) = ${P_x.toFixed(1)} N`,
         `2. Fuerza Normal: N = m · g · cos(θ) = ${m} · 9.81 · cos(${theta}°) = ${Normal.toFixed(1)} N`,
         `3. Fuerza de Rozamiento: fk = μk · N = ${mu_k} · ${Normal.toFixed(1)} = ${f_rod.toFixed(1)} N`,
@@ -2703,6 +2714,12 @@ function App() {
       setQuizRespuestaCorrecta(acel);
       
       setQuizProcedimiento([
+        `DATOS IDENTIFICADOS DEL PROBLEMA:`,
+        `  • Masa de la cabina (m) = ${m} kg`,
+        `  • Fuerza de tensión aplicada (T) = ${T_req} N`,
+        `  • Aceleración de la gravedad (g) = 9.81 m/s²`,
+        ``,
+        `DESGLOSE DE RESOLUCIÓN PASO A PASO:`,
         `1. Fuerza de Gravedad (Peso): P = m · g = ${m} · 9.81 = ${Peso.toFixed(1)} N`,
         `2. Ecuación de Movimiento (Newton): Fneta = T - P = ${T_req} - ${Peso.toFixed(1)} = ${F_neta.toFixed(1)} N`,
         `3. Aceleración del elevador: a = Fneta / m = ${F_neta.toFixed(1)} / ${m} = ${acel.toFixed(2)} m/s²`
@@ -2735,6 +2752,12 @@ function App() {
       setQuizRespuestaCorrecta(acel);
       
       setQuizProcedimiento([
+        `DATOS IDENTIFICADOS DEL PROBLEMA:`,
+        `  • Masa izquierda (m1) = ${m1} kg`,
+        `  • Masa derecha (m2) = ${m2} kg`,
+        `  • Aceleración de la gravedad (g) = 9.81 m/s²`,
+        ``,
+        `DESGLOSE DE RESOLUCIÓN PASO A PASO:`,
         `1. Peso del bloque izquierdo: P1 = m1 · g = ${m1} · 9.81 = ${P1.toFixed(1)} N`,
         `2. Peso del bloque derecho: P2 = m2 · g = ${m2} · 9.81 = ${P2.toFixed(1)} N`,
         `3. Fuerza Neta en el sistema acoplado: Fneta = P2 - P1 = ${P2.toFixed(1)} - ${P1.toFixed(1)} = ${F_neta.toFixed(1)} N`,
@@ -2760,6 +2783,7 @@ function App() {
 
   const cargarQuizEnSimulador = () => {
     if (!quizParams) return;
+    cargandoPresetRef.current = true;
     setFrenoManual(false);
     setEscenario(quizParams.escenario);
     setMasa(quizParams.masa);
@@ -2804,6 +2828,10 @@ function App() {
       setTimeout(() => toast.remove(), 500);
     }, 3500);
     
+    setTimeout(() => {
+      cargandoPresetRef.current = false;
+    }, 100);
+
     setTimeout(() => {
       resetearSimulacion();
       iniciarSimulacion();
@@ -3004,7 +3032,7 @@ function App() {
         <div className="bg-slate-900 border border-cyan-500/30 rounded-2xl p-4 max-w-lg w-full shadow-2xl flex flex-col space-y-2.5 max-h-[92vh] overflow-y-auto">
           <div className="flex justify-between items-center border-b border-slate-800 pb-1.5">
             <h4 className="text-xs font-bold text-cyan-400 tracking-wider uppercase flex items-center">
-              <i className="fa-solid fa-graduation-cap mr-2"></i> Análisis Teórico-Práctico y Margen de Error
+              <i className="fa-solid fa-square-poll-vertical mr-2"></i> Reporte y Resultados del Ensayo
             </h4>
             <button 
               onClick={() => resetearSimulacion()}
@@ -3015,48 +3043,57 @@ function App() {
             </button>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
-            <div className="bg-slate-950/60 p-2 rounded-xl border border-slate-850 flex sm:flex-col justify-between sm:justify-center items-center gap-1 px-3 sm:px-2">
-              <div className="text-left sm:text-center">
-                <div className="text-[8px] font-bold text-slate-500 uppercase">Acel. Promedio</div>
-                <div className="text-[9.5px] text-slate-300 font-mono mt-0.5">Real: {analisis.acelRealProm.toFixed(2)} m/s²</div>
-                <div className="text-[9.5px] text-slate-400 font-mono">Teo: {analisis.acelTeoricaProm.toFixed(2)} m/s²</div>
-              </div>
-              <div className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-900/60 sm:bg-transparent ${analisis.errorAcel > 5 ? 'text-amber-400' : 'text-emerald-400'}`}>
-                Err: {analisis.errorAcel.toFixed(1)}%
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left">
+            <div className="bg-slate-950/60 p-2.5 rounded-xl border border-slate-850 flex flex-col justify-center">
+              <span className="text-[8px] font-bold text-slate-500 uppercase font-mono">Aceleración Promedio</span>
+              <span className="text-xs font-bold text-cyan-400 font-mono mt-0.5">{analisis.acelRealProm.toFixed(3)} m/s²</span>
+              <span className="text-[8.5px] text-slate-500 font-mono">Teórica Ideal: {analisis.acelTeoricaProm.toFixed(3)} m/s² (Dif: {analisis.errorAcel.toFixed(1)}%)</span>
             </div>
             
-            <div className="bg-slate-950/60 p-2 rounded-xl border border-slate-850 flex sm:flex-col justify-between sm:justify-center items-center gap-1 px-3 sm:px-2">
-              <div className="text-left sm:text-center">
-                <div className="text-[8px] font-bold text-slate-500 uppercase">Velocidad Final</div>
-                <div className="text-[9.5px] text-slate-300 font-mono mt-0.5">Real: {analisis.velRealFinal.toFixed(2)} m/s</div>
-                <div className="text-[9.5px] text-slate-400 font-mono">Teo: {analisis.velTeoricaFinal.toFixed(2)} m/s</div>
-              </div>
-              <div className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-900/60 sm:bg-transparent ${analisis.errorVel > 5 ? 'text-amber-400' : 'text-emerald-400'}`}>
-                Err: {analisis.errorVel.toFixed(1)}%
-              </div>
+            <div className="bg-slate-950/60 p-2.5 rounded-xl border border-slate-850 flex flex-col justify-center">
+              <span className="text-[8px] font-bold text-slate-500 uppercase font-mono">Velocidad Final Alcanzada</span>
+              <span className="text-xs font-bold text-cyan-400 font-mono mt-0.5">{analisis.velRealFinal.toFixed(3)} m/s</span>
+              <span className="text-[8.5px] text-slate-500 font-mono">Teórica Ideal: {analisis.velTeoricaFinal.toFixed(3)} m/s (Dif: {analisis.errorVel.toFixed(1)}%)</span>
             </div>
             
-            <div className="bg-slate-950/60 p-2 rounded-xl border border-slate-850 flex sm:flex-col justify-between sm:justify-center items-center gap-1 px-3 sm:px-2">
-              <div className="text-left sm:text-center">
-                <div className="text-[8px] font-bold text-slate-500 uppercase">Posición Final</div>
-                <div className="text-[9.5px] text-slate-300 font-mono mt-0.5">Real: {analisis.posRealFinal.toFixed(2)} m</div>
-                <div className="text-[9.5px] text-slate-400 font-mono">Teo: {analisis.posTeoricaFinal.toFixed(2)} m</div>
-              </div>
-              <div className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-900/60 sm:bg-transparent ${analisis.errorPos > 5 ? 'text-amber-400' : 'text-emerald-400'}`}>
-                Err: {analisis.errorPos.toFixed(1)}%
-              </div>
+            <div className="bg-slate-950/60 p-2.5 rounded-xl border border-slate-850 flex flex-col justify-center">
+              <span className="text-[8px] font-bold text-slate-500 uppercase font-mono">Distancia de Desplazamiento</span>
+              <span className="text-xs font-bold text-cyan-400 font-mono mt-0.5">{analisis.posRealFinal.toFixed(2)} m</span>
+              <span className="text-[8.5px] text-slate-500 font-mono">Teórica Ideal: {analisis.posTeoricaFinal.toFixed(2)} m (Dif: {analisis.errorPos.toFixed(1)}%)</span>
+            </div>
+            
+            <div className="bg-slate-950/60 p-2.5 rounded-xl border border-slate-850 flex flex-col justify-center">
+              <span className="text-[8px] font-bold text-slate-500 uppercase font-mono">Tiempo Total de Tránsito</span>
+              <span className="text-xs font-bold text-cyan-400 font-mono mt-0.5">{telemetria.t.toFixed(3)} s</span>
+              <span className="text-[8.5px] text-slate-500 font-mono">Masa Principal: {masa} kg {escenario === 'Atwood' ? `• Masa Derecha: ${masa2} kg` : ''}</span>
             </div>
           </div>
           
-          <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850 text-[10px] text-slate-300 font-mono leading-relaxed h-auto max-h-[120px] overflow-y-auto">
-            <span className="text-cyan-400 font-bold">Discusión Física del Ensayo:</span>
+          <div className="bg-slate-950/40 p-3 rounded-xl border border-slate-850 space-y-1.5">
+            <span className="text-[8.5px] font-bold text-cyan-400 uppercase tracking-widest block font-mono">Breakdown de Fuerzas en el Sistema (DCL):</span>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[9.5px] text-slate-400 font-mono">
+              <div>• Tracción/Cable: <span className="text-emerald-400 font-bold">{(telemetria.fuerzas.Traccion || 0.0).toFixed(1)} N</span></div>
+              <div>• Gravedad (Peso): <span className="text-rose-400 font-bold">{(telemetria.fuerzas.Peso || 0.0).toFixed(1)} N</span></div>
+              {escenario !== 'Elevador' && escenario !== 'Atwood' && (
+                <div>• Reacción Normal: <span className="text-cyan-400 font-bold">{(telemetria.fuerzas.Normal || 0.0).toFixed(1)} N</span></div>
+              )}
+              {escenario !== 'Elevador' && escenario !== 'Atwood' && (
+                <div>• Fricción Calzada: <span className="text-rose-400 font-bold">{(telemetria.fuerzas.Friccion || 0.0).toFixed(1)} N</span></div>
+              )}
+              {parseFloat(resistenciaAire) > 0 && (
+                <div>• Arrastre del Aire: <span className="text-amber-500 font-bold">{(telemetria.fuerzas.ResistenciaAire || 0.0).toFixed(1)} N</span></div>
+              )}
+              <div>• Fuerza Neta: <span className="text-teal-400 font-bold">{(telemetria.fuerzas.FuerzaNeta || 0.0).toFixed(1)} N</span></div>
+            </div>
+          </div>
+          
+          <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850 text-[10px] text-slate-300 font-mono leading-relaxed h-auto max-h-[100px] overflow-y-auto">
+            <span className="text-cyan-400 font-bold">Conclusión Dinámica del Ensayo:</span>
             <p className="mt-0.5 text-slate-400">{analisis.explicacion}</p>
           </div>
           
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 pt-2 border-t border-slate-800/60">
-            <span className="text-[8.5px] text-slate-500">* error porcentual: E_p = |(Teo - Real)/Teo| x 100%</span>
+            <span className="text-[8.5px] text-slate-500">Laboratorio de Física UTP • Universidad Tecnológica del Perú</span>
             
             <div className="flex items-center space-x-1 justify-end">
               <button 
@@ -3164,6 +3201,7 @@ function App() {
   };
 
   const cargarRegistro = (reg) => {
+    cargandoPresetRef.current = true;
     setEscenario(reg.escenario);
     setMasa(reg.masa);
     setFuerza(reg.fuerza);
@@ -3195,6 +3233,10 @@ function App() {
       toast.classList.add('translate-y-10', 'opacity-0');
       setTimeout(() => toast.remove(), 500);
     }, 3000);
+
+    setTimeout(() => {
+      cargandoPresetRef.current = false;
+    }, 100);
     
     setTimeout(() => {
       resetearSimulacion();
@@ -4254,6 +4296,17 @@ ${escenario === 'Atwood' ? `
       const localX = xVehiculo - 65;
       const angleRuedas = (pos / RADIO_RUEDA) % (Math.PI * 2);
 
+      // Escalar vehículo y DCL en dispositivos móviles o lienzos pequeños para evitar saturación visual
+      const esCelular = w < 640 || h < 185;
+      const escalaVehiculo = esCelular ? 0.72 : 1.0;
+
+      ctx.save();
+      if (esCelular) {
+        ctx.translate(localX, 0);
+        ctx.scale(escalaVehiculo, escalaVehiculo);
+        ctx.translate(-localX, 0);
+      }
+
       if (escLower === 'automovil') {
         const yCar = -30;
         
@@ -4595,7 +4648,8 @@ ${escenario === 'Atwood' ? `
         }
       }
 
-      ctx.restore();
+      ctx.restore(); // Restaura la escala del vehículo (móviles)
+      ctx.restore(); // Restaura la rotación/traslación principal de la carretera
 
     } else if (escLower === 'curva') {
       const R_m = parseFloat(radioCurva);
@@ -5862,6 +5916,7 @@ ${escenario === 'Atwood' ? `
   };
 
   const simularYValidar = (caso) => {
+    cargandoPresetRef.current = true;
     setErrorMessage('');
     resetearSimulacion();
     
@@ -5962,6 +6017,10 @@ ${escenario === 'Atwood' ? `
     
     setTab('simulador');
     
+    setTimeout(() => {
+      cargandoPresetRef.current = false;
+    }, 100);
+
     setTimeout(() => {
       resetearSimulacion();
       iniciarSimulacion();

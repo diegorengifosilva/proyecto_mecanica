@@ -60,6 +60,16 @@ class ProblemSolver:
         a_frenado = F_neta_freno / m
 
         pasos = []
+        pasos.append("DATOS IDENTIFICADOS DEL PROBLEMA:")
+        pasos.append(f"  • Masa del vehículo (m): {m:.2f} kg")
+        pasos.append(f"  • Velocidad inicial (v₀): {v0:.2f} m/s")
+        pasos.append(f"  • Fuerza de frenado (F_freno): {f_freno:.2f} N")
+        pasos.append(f"  • Ángulo de inclinación de la rampa (θ): {inclinacion:.2f}°")
+        pasos.append(f"  • Coeficiente de fricción cinética (μk): {mu_k:.2f}")
+        pasos.append(f"  • Distancia hasta frenado (x_freno): {x_freno:.2f} m")
+        pasos.append(f"  • Aceleración de la gravedad (g): 9.81 m/s²")
+        pasos.append("")
+        pasos.append("DESGLOSE ANALÍTICO PASO A PASO:")
         pasos.append(f"1. Cálculo de la Fuerza Normal perpendicular a la rampa:")
         pasos.append(f"   N = m · g · cos(θ) = {m:.1f} · 9.81 · cos({inclinacion:.1f}°) = {Normal:.2f} N")
         pasos.append(f"2. Cálculo de la Fuerza de Fricción Dinámica:")
@@ -146,6 +156,14 @@ class ProblemSolver:
         a = F_neta / m
 
         pasos = []
+        pasos.append("DATOS IDENTIFICADOS DEL PROBLEMA:")
+        pasos.append(f"  • Masa de la cabina (m): {m:.2f} kg")
+        pasos.append(f"  • Velocidad inicial (v₀): {v0:.2f} m/s")
+        pasos.append(f"  • Altura de falla (y_falla): {y_falla:.2f} m")
+        pasos.append(f"  • Fuerza de frenado de emergencia (F_freno): {f_freno:.2f} N")
+        pasos.append(f"  • Aceleración de la gravedad (g): 9.81 m/s²")
+        pasos.append("")
+        pasos.append("DESGLOSE ANALÍTICO PASO A PASO:")
         pasos.append(f"1. Cálculo del Peso del elevador:")
         pasos.append(f"   P = m · g = {m:.1f} · 9.81 = {Peso:.2f} N")
         pasos.append(f"2. Cálculo de la Fuerza Neta y la Aceleración post-falla (con frenos de emergencia activos):")
@@ -306,6 +324,16 @@ class ProblemSolver:
         a = F_neta / m
 
         pasos = []
+        pasos.append("DATOS IDENTIFICADOS DEL PROBLEMA:")
+        pasos.append(f"  • Masa del avión (m): {m:.2f} kg")
+        pasos.append(f"  • Empuje de turbinas (T): {empuje:.2f} N")
+        pasos.append(f"  • Coeficiente de fricción de rodadura (μ): {mu_pista:.4f}")
+        pasos.append(f"  • Longitud de la pista (L): {l_pista:.2f} m")
+        pasos.append(f"  • Velocidad de despegue (v_despegue): {v_despegue:.2f} m/s")
+        pasos.append(f"  • Velocidad inicial (v₀): {v0:.2f} m/s")
+        pasos.append(f"  • Aceleración de la gravedad (g): 9.81 m/s²")
+        pasos.append("")
+        pasos.append("DESGLOSE ANALÍTICO PASO A PASO:")
         pasos.append(f"1. Cálculo del Peso de la aeronave:")
         pasos.append(f"   P = m · g = {m:.1f} · 9.81 = {Peso:.2f} N")
         pasos.append(f"2. Cálculo de la Fuerza de Fricción de rodadura en la pista:")
@@ -384,7 +412,22 @@ class ProblemSolver:
             return {"error": "La masa debe ser estrictamente mayor a 0 kg."}
 
         pasos = []
-        pasos.append(f"--- RESOLUCIÓN ANALÍTICA DE CASO PERSONALIZADO ({escenario.upper()}) ---")
+        pasos.append("DATOS IDENTIFICADOS DEL PROBLEMA:")
+        pasos.append(f"  • Escenario seleccionado: {escenario}")
+        pasos.append(f"  • Masa del cuerpo principal (m/m1): {m:.2f} kg")
+        if escL == 'atwood':
+            pasos.append(f"  • Masa del cuerpo secundario (m2): {m2:.2f} kg")
+        pasos.append(f"  • Velocidad inicial (v₀): {v0:.2f} m/s")
+        pasos.append(f"  • Velocidad final objetivo (vf): {vf:.2f} m/s")
+        if escL != 'atwood' and escL != 'elevador':
+            pasos.append(f"  • Fuerza aplicada (T/F): {fuerza:.2f} N")
+            pasos.append(f"  • Ángulo de inclinación (θ): {inclinacion:.2f}°")
+            pasos.append(f"  • Coeficiente de fricción (μ): {fric_coef:.2f}")
+        elif escL == 'elevador':
+            pasos.append(f"  • Fuerza de tensión del cable (T): {fuerza:.2f} N")
+        pasos.append(f"  • Aceleración de la gravedad (g): 9.81 m/s²")
+        pasos.append("")
+        pasos.append("DESGLOSE ANALÍTICO PASO A PASO:")
         
         # 1. Análisis de Fuerzas y Aceleración según Escenario
         if escL == 'atwood':
@@ -609,6 +652,14 @@ class ProblemSolver:
         Tension = m1 * (self.g + a)
 
         pasos = []
+        pasos.append("DATOS IDENTIFICADOS DEL PROBLEMA:")
+        pasos.append(f"  • Masa del bloque izquierdo (m1): {m1:.2f} kg")
+        pasos.append(f"  • Masa del bloque derecho (m2): {m2:.2f} kg")
+        pasos.append(f"  • Velocidad inicial (v₀): {v0:.2f} m/s")
+        pasos.append(f"  • Velocidad final objetivo (vf): {vf:.2f} m/s")
+        pasos.append(f"  • Aceleración de la gravedad (g): 9.81 m/s²")
+        pasos.append("")
+        pasos.append("DESGLOSE ANALÍTICO PASO A PASO:")
         pasos.append(f"1. Cálculo de las Fuerzas de Gravedad (Pesos) para cada masa:")
         pasos.append(f"   P1 = m1 · g = {m1:.1f} · 9.81 = {P1:.2f} N (Masa Izquierda)")
         pasos.append(f"   P2 = m2 · g = {m2:.1f} · 9.81 = {P2:.2f} N (Masa Derecha)")
@@ -680,6 +731,16 @@ class ProblemSolver:
         a = F_neta / m
 
         pasos = []
+        pasos.append("DATOS IDENTIFICADOS DEL PROBLEMA:")
+        pasos.append(f"  • Masa del camión (m): {m:.2f} kg")
+        pasos.append(f"  • Ángulo de inclinación de la pendiente (θ): {inclinacion:.2f}°")
+        pasos.append(f"  • Coeficiente de fricción cinética (μk): {mu_k:.2f}")
+        pasos.append(f"  • Fuerza del motor (F_motor): {fuerza_motor:.2f} N")
+        pasos.append(f"  • Velocidad inicial (v₀): {v0:.2f} m/s")
+        pasos.append(f"  • Velocidad final objetivo (vf): {vf:.2f} m/s")
+        pasos.append(f"  • Aceleración de la gravedad (g): 9.81 m/s²")
+        pasos.append("")
+        pasos.append("DESGLOSE ANALÍTICO PASO A PASO:")
         pasos.append(f"1. Cálculo de la Fuerza Normal sobre la pendiente:")
         pasos.append(f"   N = m · g · cos(θ) = {m:.1f} · 9.81 · cos({inclinacion:.1f}°) = {Normal:.2f} N")
         pasos.append(f"2. Cálculo de la Fuerza de Fricción Dinámica que se opone:")
@@ -786,6 +847,18 @@ class ProblemSolver:
             tipo_deslizamiento = "deslizamiento"
 
         pasos = []
+        pasos.append("DATOS IDENTIFICADOS DEL PROBLEMA:")
+        pasos.append(f"  • Masa del vehículo (m): {m:.2f} kg")
+        pasos.append(f"  • Radio de la curva (R): {R:.2f} m")
+        pasos.append(f"  • Ángulo de peralte (θ): {inclinacion:.2f}°")
+        pasos.append(f"  • Coeficiente de fricción estática (μs): {mu_s:.2f}")
+        pasos.append(f"  • Coeficiente de fricción cinética (μk): {mu_k:.2f}")
+        pasos.append(f"  • Fuerza tangencial aplicada (F): {fuerza:.2f} N")
+        pasos.append(f"  • Velocidad inicial (v₀): {v0:.2f} m/s")
+        pasos.append(f"  • Velocidad final objetivo (vf): {vf:.2f} m/s")
+        pasos.append(f"  • Aceleración de la gravedad (g): 9.81 m/s²")
+        pasos.append("")
+        pasos.append("DESGLOSE ANALÍTICO PASO A PASO:")
         pasos.append(f"1. Cálculo de límites de velocidad seguros para adherencia lateral (R = {R:.1f} m, θ = {inclinacion:.1f}°, μs = {mu_s:.2f}):")
         if v_max != float('inf'):
             pasos.append(f"   v_max = √[ g · R · (tan(θ) + μs) / (1 - μs · tan(θ)) ] = √[ 9.81 · {R:.1f} · ({tan_theta:.4f} + {mu_s:.2f}) / (1 - {mu_s:.2f} · {tan_theta:.4f}) ] = {v_max:.2f} m/s")
