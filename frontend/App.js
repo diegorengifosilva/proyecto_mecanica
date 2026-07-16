@@ -3087,7 +3087,7 @@ function App() {
             </div>
           </div>
           
-          <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850 text-[10px] text-slate-300 font-mono leading-relaxed h-auto max-h-[100px] overflow-y-auto">
+          <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850 text-[10px] text-slate-300 font-mono leading-relaxed">
             <span className="text-cyan-400 font-bold">Conclusión Dinámica del Ensayo:</span>
             <p className="mt-0.5 text-slate-400">{analisis.explicacion}</p>
           </div>
