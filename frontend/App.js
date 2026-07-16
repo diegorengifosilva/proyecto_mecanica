@@ -3028,7 +3028,7 @@ function App() {
     if (!analisis) return null;
     
     return (
-      <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 z-[9999] animate-fade-in">
+      <div className="fixed inset-0 bg-slate-950/65 flex items-center justify-center p-4 z-[9999] animate-fade-in">
         <div className="bg-slate-900 border border-cyan-500/30 rounded-2xl p-4 max-w-lg w-full shadow-2xl flex flex-col space-y-2.5 max-h-[92vh] overflow-y-auto">
           <div className="flex justify-between items-center border-b border-slate-800 pb-1.5">
             <h4 className="text-xs font-bold text-cyan-400 tracking-wider uppercase flex items-center">
